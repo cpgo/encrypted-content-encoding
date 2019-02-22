@@ -396,6 +396,21 @@ function useCustomCallback(version) {
   assert.equal(Buffer.compare(decrypted, input), 0)
 }
 
+function extractKeyIdFromHeader(version) {
+  var parameters = {
+    keyid: '123456789',
+    key: crypto.randomBytes(16)
+  };
+  let input = generateInput()
+
+  var encrypted = ece.encrypt(input, parameters);
+  logbuf('encrypt keyid', '123456789')
+
+  var keyid = ece.keyIdFromHeader(encrypted).toString()
+  logbuf('extracted keyid', keyid)
+  assert.equal(keyid, '123456789')
+}
+
 validate();
 filterTests([ 'aesgcm128', 'aesgcm', 'aes128gcm' ])
   .forEach(function(version) {
@@ -406,7 +421,8 @@ filterTests([ 'aesgcm128', 'aesgcm', 'aes128gcm' ])
                   detectTruncation,
                   useDH,
                   checkExamples,
-                  useCustomCallback
+                  useCustomCallback,
+                  extractKeyIdFromHeader
                 ])
       .forEach(function(test) {
         log(version + ' Test: ' + test.name);

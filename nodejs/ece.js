@@ -529,9 +529,16 @@ function encrypt(buffer, params, keyLookupCallback) {
 
 function isFunction(object) {
   return typeof(object) === 'function';
- }
+}
+
+function keyIdFromHeader(buffer) {
+  var idsz = buffer.readUIntBE(20, 1);
+  let keyId = buffer.slice(21, 21 + idsz);
+  return keyId
+}
 
 module.exports = {
   decrypt: decrypt,
-  encrypt: encrypt
+  encrypt: encrypt,
+  keyIdFromHeader: keyIdFromHeader
 };
